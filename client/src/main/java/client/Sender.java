@@ -17,6 +17,6 @@ public class Sender extends TimerTask {
 	public void run() {
 		int random = mock.getRandom();
 		socketManager.sendInt(random);
-		System.out.println(random);
+		//System.out.println(random);
 	}
 }
