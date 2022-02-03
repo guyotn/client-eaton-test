@@ -1,5 +1,10 @@
-/target
+#files#
+*.class
+*.jar
 *.log
-.classpath
-.settings/
 .project
+.classpath
+
+#folders
+**/target
+**/.settings
