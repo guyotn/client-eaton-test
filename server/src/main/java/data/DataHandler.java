@@ -63,11 +63,12 @@ public class DataHandler {
 		System.out.println(lastData + " last data of each client:");
 		while(iteratorKey.hasNext()){
 			key = iteratorKey.next();
-			res += "Client " + key + ": ";
 			
 			// We have one client, let's display backward the lastData from this client
 			dataClient = synMap.get(key);
 			totalNumberDataClient = dataClient.size();
+			res += "Client " + key + " number of data received " + totalNumberDataClient;
+			res +=" last " + lastData + " received: ";
 			numberData = 0;
 			while (numberData < lastData && numberData < totalNumberDataClient) {
 				res += dataClient.get(totalNumberDataClient-numberData-1) +", ";
