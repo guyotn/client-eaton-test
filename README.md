@@ -5,6 +5,7 @@
 In this repository you may find two applications:
 - The first simulates the behavior of a client, you may find it in the `client` folder.
 - the second simulates the behavior of a server, you may find it in the `server` folder.
+
 The two are supposed to work together, running at the same time in different process/devices.
 
 ## Client
@@ -39,6 +40,7 @@ Here is the list of things to add to the application to finish it. Most of the i
   - Server: number of ressource to display.
   - Server: which port to listen.
   - Client: transmited data range.
+ - git rebase for a clean working tree. 
 
 ## Ressources
 Here are a list of ressources used to create the project:
