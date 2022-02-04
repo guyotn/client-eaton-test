@@ -50,7 +50,7 @@ public class DataHandler {
 	}
 	
 	public String toString(int lastData) {
-		String res = "";
+		StringBuffer res = new StringBuffer();
 		long key;
 		Set<Long> keys = synMap.keySet();
 		Iterator<Long> iteratorKey = keys.iterator();
@@ -67,20 +67,20 @@ public class DataHandler {
 			// We have one client, let's display backward the lastData from this client
 			dataClient = synMap.get(key);
 			totalNumberDataClient = dataClient.size();
-			res += "Client " + key + " number of data received " + totalNumberDataClient;
-			res +=" last " + lastData + " received: ";
+			res.append("Client " + key + " number of data received " + totalNumberDataClient);
+			res.append(" last " + lastData + " received: ");
 			numberData = 0;
 			while (numberData < lastData && numberData < totalNumberDataClient) {
-				res += dataClient.get(totalNumberDataClient-numberData-1) +", ";
+				res.append(dataClient.get(totalNumberDataClient-numberData-1) +", ");
 				numberData++;
 			}
-			res += "\n";
+			res.append("\n");
 		}
 		
 		// Now let's display the average
-		res += "----\n Avergae: " + getAverage();
+		res.append("----\n Avergae: " + getAverage());
 		
-		return res;
+		return res.toString();
 	}
 }
 
