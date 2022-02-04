@@ -37,6 +37,7 @@ public class Listener extends Thread {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.err.println("An unexpected disconnection occured for client " + tid);
 		}
 	}
 }
