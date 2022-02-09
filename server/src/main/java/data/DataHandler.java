@@ -1,86 +1,95 @@
 package data;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import io.ParseInput;
 /*
  * The purpose of this class is to handle the data received by the server.
  * 
  */
 public class DataHandler {
-	// The main element is this map, each thread have a list in which it write, the key to this map is the pid of the thread.
-	private Map<Long, List<Integer> > synMap;
+	// The main element is this map, each thread have a list in which it write, the key to this map is the pid of the thread (tid).
+	private Map<Long, ClientData> synMap;
 
 	// Instead of computing the average each time a data is add, we memorize the sum and the number of element
 	// With that we can save time by just computing the average = sum/numberElements
-	private int sum = 0;
-	private int numberElements = 0;
+	private AtomicInteger sum;
+	private AtomicInteger numberElements;
+	private int numberOfDataToDisplay = 4;
+	private Logger logger = Logger.getLogger(DataHandler.class.getName());
 
 	public DataHandler() {
-		synMap = Collections.synchronizedMap(new HashMap<Long, List<Integer> >());
+		synMap = Collections.synchronizedMap(new HashMap<Long, ClientData>());
+		sum = new AtomicInteger();
+		numberElements = new AtomicInteger();
+		logger.setLevel(ParseInput.getLogLevel());
+		logger.log(Level.FINE,"DataHandler created, number of data to display: " + numberOfDataToDisplay);
+	}
+	
+	public DataHandler(int numberOfDataToDisplay) {
+		this();
+		this.numberOfDataToDisplay = numberOfDataToDisplay;
 	}
 
 
-	public List<Integer> initializeKey(long pid) {
+	public ClientData initializeClientData(long tid) {
 
 		// Verified that tab is initialized for this key
-		if (!synMap.containsKey(pid)) {
+		if (!synMap.containsKey(tid)) {
 			// If not initialization
-			synMap.put(pid, Collections.synchronizedList(new ArrayList<Integer>()));
+			synMap.put(tid, new ClientData(this, tid));
 		}		
-		return synMap.get(pid);
+		return synMap.get(tid);
 	}
-
-	public void addData(long pid, int data) {
-		if (!synMap.containsKey(pid)) {
-			initializeKey(pid);
-		}
-		synMap.get(pid).add(data);
-		numberElements++;
-		sum += data;
+	
+	public void addData(int data) {
+		numberElements.incrementAndGet();
+		sum.addAndGet(data);
 	}
 
 	public int getAverage() {
-		if (numberElements == 0) {
+		if (numberElements.get() == 0) {
 			return 0;
 		}
-		return sum/numberElements;
+		return sum.get()/numberElements.get();
 	}
 	
-	public void dispayData(int lastData) {
-		System.out.println(toString(lastData) + "\n");
+	public void dispayData() {
+		System.out.println(toString() + "\n");
 	}
 	
-	public String toString(int lastData) {
+	public String toString() {
 		StringBuffer res = new StringBuffer();
-		long key;
+		long clientKey;
 		Set<Long> keys = synMap.keySet();
 		Iterator<Long> iteratorKey = keys.iterator();
 		
-		List<Integer> dataClient;
-		int numberData;
-		int totalNumberDataClient;
-		
-		// Browse client and display the n lastData
-		System.out.println(lastData + " last data of each client:");
+		// Browse client and display the numberOfDataToDisplay lastData
+		System.out.println(numberOfDataToDisplay + " last data of each client:");
 		while(iteratorKey.hasNext()){
-			key = iteratorKey.next();
-			
+			clientKey = iteratorKey.next();
 			// We have one client, let's display backward the lastData from this client
-			dataClient = synMap.get(key);
-			totalNumberDataClient = dataClient.size();
-			res.append("Client " + key + " number of data received " + totalNumberDataClient);
-			res.append(" last " + lastData + " received: ");
-			numberData = 0;
-			while (numberData < lastData && numberData < totalNumberDataClient) {
-				res.append(dataClient.get(totalNumberDataClient-numberData-1) +", ");
-				numberData++;
-			}
-			res.append("\n");
+			res.append(synMap.get(clientKey).toString());
 		}
 		
 		// Now let's display the average
-		res.append("----\n Avergae: " + getAverage());
+		res.append("---\n Total avergae: " + getAverage());
 		
 		return res.toString();
+	}
+	
+	public int getNumberOfDataToDisplay() {
+		return numberOfDataToDisplay;
+	}
+	
+	public void setNumberOfDataToDisplay(int numberOfDataToDisplay) {
+		if (numberOfDataToDisplay < 0) {
+			throw new IllegalArgumentException("Number of data to display must be a positiv integer");
+		}
+		this.numberOfDataToDisplay = numberOfDataToDisplay;
 	}
 }
 
