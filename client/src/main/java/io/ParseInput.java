@@ -24,7 +24,8 @@ public class ParseInput {
 	public static boolean parseInput(String [] args) {
 		int i = 0;
 		String arg;
-
+		logger.setLevel(getLogLevel());
+		
 		if (args.length > 0 && args[0].charAt(0) != '-') {
 			// premier argument ip
 			ip = args[0];
@@ -68,9 +69,7 @@ public class ParseInput {
 					i++;
 					logLevel = Integer.parseInt(args[i]);
 					if (logLevel < 0 || logLevel > 3) {
-						printHelp("Log level must be between 0 and 3");
-						logLevel = 1;
-						return false;
+						 throw new IllegalArgumentException("Log level must be between 0 and 3");
 					}
 					logger.setLevel(getLogLevel());
 				} catch (NumberFormatException e) {
@@ -143,15 +142,15 @@ public class ParseInput {
 		System.out.println("This program try to establish a socket connection "
 				+ "with a server and send data to it every defined time lapse");
 		System.out.println("options:");
-		System.out.println("In first position or --ip String to specified the ip to connect to");
-		System.out.println("-p or --port to specified the port of the server");
-		System.out.println("-p or --port to specified the port of the server");
+		System.out.println("In first position or --ip String to specified the ip to connect to, default 127.0.0.1");
+		System.out.println("-p n or --port n to specified the port of the server, default 8000");
+		System.out.println("-v n, n log level, default 1");
 		System.out.println("\t 0: Nothing");
 		System.out.println("\t 1: Sever");
 		System.out.println("\t 2: Info");
 		System.out.println("\t 3: Debug");
-		System.out.println("-r n1 n2 or --range n1 n2 to specified the send data range");
-		System.out.println("-t n or --time n to specified the time (ms) between each sent data");
+		System.out.println("-r n1 n2 or --range n1 n2 to specified the send data range, default 0 1000");
+		System.out.println("-t n or --time n to specified the time (ms) between each sent data, default 3000");
 		System.out.println("q ou quit to close once launch");
 		System.out.println("-h or --help to display help");
 		System.out.println("example : java -cp target/myJar.jar"
@@ -160,8 +159,9 @@ public class ParseInput {
 
 	private static void printHelp(String precisions) {
 		logger.log(Level.FINE, "display Help");
-		printHelp();
 		System.out.println(precisions);
+		System.out.println("---");
+		printHelp();
 	}
 	
 	public static boolean quit() {
@@ -215,6 +215,7 @@ public class ParseInput {
 	public static void setLogLevel(int newLogLevel) {
 		logger.log(Level.FINE, "setLogLevel: " + newLogLevel);
 		logLevel = newLogLevel;
+		logger.setLevel(getLogLevel());
 	}
 
 	public static int getLowerDataValue() {

@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SocketManager {
+	
 	private Socket socket;
 	private PrintWriter out;
 	private String ip;

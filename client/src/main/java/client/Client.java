@@ -17,11 +17,9 @@ public class Client {
 		logger.setLevel(ParseInput.getLogLevel());
 		Sender sender = new Sender();
 		Timer timer = new Timer();
-		timer.schedule(sender, 0, 3000);
-		logger.log(Level.INFO,"Scheduler set to ");
-		while (!ParseInput.quit()) {
-			
-		}
+		timer.schedule(sender, 0, ParseInput.getTimeInterval());
+		logger.log(Level.INFO,"Scheduler set to " + ParseInput.getTimeInterval());
+		while (!ParseInput.quit());
 		sender.stop();
 		timer.cancel();
 	}

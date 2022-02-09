@@ -30,6 +30,7 @@ public class Sender extends TimerTask {
 	
 	public void stop() {
 		cancel();
+		socketManager.sendString("stop");
 		socketManager.stopConnection();
 	}
 }
