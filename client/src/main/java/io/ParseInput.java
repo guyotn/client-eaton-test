@@ -41,7 +41,7 @@ public class ParseInput {
 				try {
 					i++;
 					ip = args[i];
-				} catch (NullPointerException e){
+				} catch (IndexOutOfBoundsException e){
 					printHelp("Unspecified ip.");
 					return false;
 				}
@@ -56,7 +56,7 @@ public class ParseInput {
 				} catch (NumberFormatException e) {
 					printHelp("incorrect port format, please enter an integer.");
 					return false;
-				} catch (NullPointerException e){
+				} catch (IndexOutOfBoundsException e){
 					printHelp("Unspecified port.");
 					return false;
 				}
@@ -75,7 +75,7 @@ public class ParseInput {
 				} catch (NumberFormatException e) {
 					printHelp("Incorrect port format, please enter an integer.");
 					return false;
-				} catch (NullPointerException e){
+				} catch (IndexOutOfBoundsException e){
 					printHelp("Unspecified verbose level.");
 					return false;
 				}
@@ -92,12 +92,16 @@ public class ParseInput {
 				} catch (NumberFormatException e) {
 					printHelp("Incorrect range format, please enter an integer.");
 					return false;
-				} catch (NullPointerException e){
+				} catch (IndexOutOfBoundsException e){
 					printHelp("Unspecified data range.");
 					return false;
 				}
 				if (lowerDataValue > upperDataValue) {
 					printHelp("Lower data boundary superior to upper data boundary.");
+					return false;
+				}
+				if (lowerDataValue < 0) {
+					printHelp("Lower data boundary inferior to 0.");
 					return false;
 				}
 				break;
@@ -122,7 +126,7 @@ public class ParseInput {
 				} catch (NumberFormatException e) {
 					printHelp("Incorrect time interval format, please enter an integer.");
 					return false;
-				} catch (NullPointerException e){
+				} catch (IndexOutOfBoundsException e){
 					printHelp("Unspecified verbose level.");
 					return false;
 				}
@@ -138,6 +142,7 @@ public class ParseInput {
 	}
 
 	private static void printHelp() {
+		if (logLevel == 0) return;
 		logger.log(Level.FINE, "display Help");
 		System.out.println("This program try to establish a socket connection "
 				+ "with a server and send data to it every defined time lapse");
@@ -165,7 +170,6 @@ public class ParseInput {
 	}
 	
 	public static boolean quit() {
-		System.out.println("Tape q or quit to exit.");
 		Scanner quit = new Scanner(System.in);
 		String input = quit.next();
 		quit.close();
@@ -252,7 +256,7 @@ public class ParseInput {
 		return timeInterval;
 	}
 
-	public void setTimeInterval(int newTimeInterval) {
+	public static void setTimeInterval(int newTimeInterval) {
 		logger.log(Level.FINE, "setTimeInterval: " + newTimeInterval);
 		if (timeInterval < 0 ) {
 			throw new IllegalArgumentException();
